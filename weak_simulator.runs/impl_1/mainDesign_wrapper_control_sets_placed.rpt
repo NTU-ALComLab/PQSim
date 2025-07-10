@@ -1,0 +1,118 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2024.1 (win64) Build 5076996 Wed May 22 18:37:14 MDT 2024
+| Date         : Sat Apr 12 01:17:06 2025
+| Host         : LAPTOP-KQ544FO5 running 64-bit major release  (build 9200)
+| Command      : report_control_sets -verbose -file mainDesign_wrapper_control_sets_placed.rpt
+| Design       : mainDesign_wrapper
+| Device       : xc7a200t
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Control Set Information
+
+Table of Contents
+-----------------
+1. Summary
+2. Histogram
+3. Flip-Flop Distribution
+4. Detailed Control Set Information
+
+1. Summary
+----------
+
++----------------------------------------------------------+-------+
+|                          Status                          | Count |
++----------------------------------------------------------+-------+
+| Total control sets                                       |    40 |
+|    Minimum number of control sets                        |    40 |
+|    Addition due to synthesis replication                 |     0 |
+|    Addition due to physical synthesis replication        |     0 |
+| Unused register locations in slices containing registers |    57 |
++----------------------------------------------------------+-------+
+* Control sets can be merged at opt_design using control_set_merge or merge_equivalent_drivers
+** Run report_qor_suggestions for automated merging and remapping suggestions
+
+
+2. Histogram
+------------
+
++--------------------+-------+
+|       Fanout       | Count |
++--------------------+-------+
+| Total control sets |    40 |
+| >= 0 to < 4        |     2 |
+| >= 4 to < 6        |     0 |
+| >= 6 to < 8        |     2 |
+| >= 8 to < 10       |    21 |
+| >= 10 to < 12      |     0 |
+| >= 12 to < 14      |     0 |
+| >= 14 to < 16      |     0 |
+| >= 16              |    15 |
++--------------------+-------+
+* Control sets can be remapped at either synth_design or opt_design
+
+
+3. Flip-Flop Distribution
+-------------------------
+
++--------------+-----------------------+------------------------+-----------------+--------------+
+| Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
++--------------+-----------------------+------------------------+-----------------+--------------+
+| No           | No                    | No                     |              94 |           24 |
+| No           | No                    | Yes                    |            5633 |         2617 |
+| No           | Yes                   | No                     |               0 |            0 |
+| Yes          | No                    | No                     |              55 |           14 |
+| Yes          | No                    | Yes                    |            6001 |         2711 |
+| Yes          | Yes                   | No                     |               0 |            0 |
++--------------+-----------------------+------------------------+-----------------+--------------+
+
+
+4. Detailed Control Set Information
+-----------------------------------
+
++---------------------------------------+------------------------------------------------------------------------------------------------------------+----------------------------------------------------+------------------+----------------+--------------+
+|              Clock Signal             |                                                Enable Signal                                               |                  Set/Reset Signal                  | Slice Load Count | Bel Load Count | Bels / Slice |
++---------------------------------------+------------------------------------------------------------------------------------------------------------+----------------------------------------------------+------------------+----------------+--------------+
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/uart_rx_0/inst/num_0                                                                          | mainDesign_i/uart_rx_0/inst/data[7]_i_2_n_0        |                1 |              3 |         3.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/uart_tx_0/inst/num                                                                            | mainDesign_i/uart_tx_0/inst/TXD_i_2_n_0            |                1 |              3 |         3.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/cnt_r[5]_i_1_n_0                                                          | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                2 |              6 |         3.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/mc1/value                                                           | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                3 |              7 |         2.33 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[103]_i_1_n_0                                               | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                1 |              8 |         8.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[79]_i_1_n_0                                                | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                1 |              8 |         8.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/uart_rx_0/inst/data_1                                                                         | mainDesign_i/uart_rx_0/inst/data[7]_i_2_n_0        |                1 |              8 |         8.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/cnt_r[0][7]_i_1_n_0                                                 | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                4 |              8 |         2.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/cnt_r[2][7]_i_1_n_0                                                 | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                4 |              8 |         2.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/cnt_r[1][7]_i_1_n_0                                                 | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                2 |              8 |         4.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[71]_i_1_n_0                                                | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                2 |              8 |         4.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/o_data_r[7]_i_1_n_0                                                       | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                5 |              8 |         1.60 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[119]_i_1_n_0                                               | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                2 |              8 |         4.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[111]_i_1_n_0                                               | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                2 |              8 |         4.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[15]_i_1_n_0                                                | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                3 |              8 |         2.67 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[23]_i_1_n_0                                                | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                3 |              8 |         2.67 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[31]_i_1_n_0                                                | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                2 |              8 |         4.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[39]_i_1_n_0                                                | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                3 |              8 |         2.67 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[47]_i_1_n_0                                                | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                1 |              8 |         8.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[63]_i_1_n_0                                                | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                2 |              8 |         4.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[7]_i_1_n_0                                                 | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                2 |              8 |         4.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[87]_i_1_n_0                                                | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                1 |              8 |         8.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[95]_i_1_n_0                                                | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                2 |              8 |         4.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/whole_i_data_r[55]_i_1_n_0                                                | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                1 |              8 |         8.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/mc1/E[0]                                                            | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                4 |              8 |         2.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/mc1/cnt2[6]_i_1_n_0                                                 | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                6 |             17 |         2.83 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 |                                                                                                            | mainDesign_i/uart_tx_0/inst/TXD_i_2_n_0            |                6 |             18 |         3.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/fifo_generator_0/U0/inst_fifo_gen/gconvfifo.rf/grf.rf/gntv_or_sync_fifo.gl0.rd/gras.rsts/E[0] |                                                    |                6 |             22 |         3.67 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 |                                                                                                            | mainDesign_i/uart_rx_0/inst/data[7]_i_2_n_0        |                9 |             26 |         2.89 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/fifo_generator_0/U0/inst_fifo_gen/gconvfifo.rf/grf.rf/gntv_or_sync_fifo.gl0.wr/gwas.wsts/E[0] |                                                    |                8 |             33 |         4.12 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/mc1/multi_cnt_r_reg[0]_0[0]                                         | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |               26 |             48 |         1.85 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/mc1/FSM_sequential_state_r_reg[0][0]                                | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |                7 |             48 |         6.86 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/E[0]                                                                | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |               20 |             56 |         2.80 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/mc1/result                                                          | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |               15 |             60 |         4.00 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/mc1/nxt_value17823_out                                              | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |               70 |             80 |         1.14 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 |                                                                                                            |                                                    |               24 |             94 |         3.92 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/i_basis_w                                                           | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |               33 |            120 |         3.64 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/basis_r[0][1]_i_1_n_0                                               | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |               30 |            129 |         4.30 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 | mainDesign_i/core_wrapper_0/inst/core1/mc1/tableau_setup[21][0]_i_1_n_0                                    | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |             2449 |           5256 |         2.15 |
+|  mainDesign_i/clk_wiz_0/inst/clk_out1 |                                                                                                            | mainDesign_i/core_wrapper_0/inst/core1/mc1/rst_n_0 |             2602 |           5589 |         2.15 |
++---------------------------------------+------------------------------------------------------------------------------------------------------------+----------------------------------------------------+------------------+----------------+--------------+
+
+

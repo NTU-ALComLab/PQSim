@@ -1,0 +1,24 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  --include "../../../../weak_simulator.gen/sources_1/bd/mainDesign/ipshared/3242" \
+"../../../../weak_simulator.srcs/sources_1/new/define.v" \
+"../../../../weak_simulator.srcs/sources_1/new/Core.v" \
+"../../../../weak_simulator.srcs/sources_1/new/measureClifford.v" \
+"../../../../weak_simulator.srcs/sources_1/new/core_wrapper.v" \
+"../../../../weak_simulator.srcs/sources_1/new/uart.v" \
+"../../../../weak_simulator.ip_user_files/bd/mainDesign/ip/mainDesign_fifo_generator_0_0/sim/mainDesign_fifo_generator_0_0.v" \
+"../../../../weak_simulator.ip_user_files/bd/mainDesign/ip/mainDesign_core_wrapper_0_0/sim/mainDesign_core_wrapper_0_0.v" \
+"../../../../weak_simulator.ip_user_files/bd/mainDesign/ip/mainDesign_uart_tx_0_0/sim/mainDesign_uart_tx_0_0.v" \
+"../../../../weak_simulator.ip_user_files/bd/mainDesign/ip/mainDesign_uart_rx_0_0/sim/mainDesign_uart_rx_0_0.v" \
+"../../../../weak_simulator.ip_user_files/bd/mainDesign/ip/mainDesign_clk_wiz_0_0/mainDesign_clk_wiz_0_0_clk_wiz.v" \
+"../../../../weak_simulator.ip_user_files/bd/mainDesign/ip/mainDesign_clk_wiz_0_0/mainDesign_clk_wiz_0_0.v" \
+"../../../../weak_simulator.ip_user_files/bd/mainDesign/sim/mainDesign.v" \
+"../../../../weak_simulator.gen/sources_1/bd/mainDesign/hdl/mainDesign_wrapper.v" \
+
+sv xil_defaultlib  --include "../../../../weak_simulator.gen/sources_1/bd/mainDesign/ipshared/3242" \
+"../../../../weak_simulator.srcs/sim_1/new/testfixture.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
