@@ -1,8 +1,0 @@
-vhdl xpm  \
-"C:/Xilinx/Vivado/2024.1/data/ip/xpm/xpm_VCOMP.vhd" \
-
-vhdl fifo_generator_v13_2_10  \
-"../../../weak_simulator.gen/sources_1/bd/mainDesign/ipshared/1443/hdl/fifo_generator_v13_2_rfs.vhd" \
-
-# Do not sort compile order
-nosort
