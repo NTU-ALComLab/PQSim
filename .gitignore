@@ -1,0 +1,11 @@
+weak_simulator.cache/
+weak_simulator.gen/
+weak_simulator.hw/
+weak_simulator.ip_user_files/
+weak_simulator.runs/
+weak_simulator.sim/
+weak_simulator.srcs/
+weak_simulator.xpr
+ip_upgrade.log
+benchmark_new2/*out.qasm
+benchmark_scalability/*out.qasm
