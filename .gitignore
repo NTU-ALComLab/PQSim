@@ -9,3 +9,6 @@ weak_simulator.xpr
 ip_upgrade.log
 benchmark_new2/*out.qasm
 benchmark_scalability/*out.qasm
+cliffordT_template/Core.v
+cliffordT_template/define.v
+cliffordT_template/measureClifford.v
