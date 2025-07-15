@@ -26,7 +26,7 @@ The translator will generates below files
 - `*_out.qasm` : The circuits after cutting non-Clifford gates
 - `cliffordT_template/Core.v`, `cliffordT_template/measureClifford.v`, `cliffordT_template/define.v` : generated verilog files for the Vivado project
 
-With the generated verilog files, we then run synthesis, implementation, and write bitstream on the Vivado projects. After burn the bitstream in the FPGA, we can run the simulator codes.
+With the generated verilog files, we then run synthesis, implementation, and write bitstream on the Vivado projects. After program the bitstream into the FPGA, we can run the simulator codes.
 
 To compile the C++ codes, simply type
 ```
@@ -68,6 +68,35 @@ For sample mode, type
 For someone who want to reproduce the experiments, please refer to `vivado_srcs` directory for more information.
 
 ## Example
+Here we use `example/example_circuit.qasm` as an example. Below is the circuit diagram.
+
+![image](example/example_circuit.png)
+
+First run the translator, then generate bitstream in the project with the generated verilog files. We also give the generated bitstream file `example/example_circuit.bit` here.
+
+After programming the bitstream into the FPGA, we can start to simulate the circuit. Here the UART ports is `/dev/ttyUSB0`.
+
+Query
+```
+$ ./weak_sim /dev/ttyUSB0 -q 000 1 3
+Observable : 000
+a = 4, b = 2, k = 5
+Expectation value : 0.213388 (=(4 + 2√2)/32)
+Query time : 0.016441 s
+```
+Sample
+```
+$ ./weak_sim /dev/ttyUSB0 -s 10000 1 3 3
+000 : 2097
+001 : 400
+010 : 2140
+011 : 329
+100 : 2102
+101 : 353
+110 : 2172
+111 : 407
+Sample time : 0.123212 s
+```
 
 ## TODO
 Currently, we need to run synthesis and implementation for each circuit. This is very time comsuming.
