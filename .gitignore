@@ -12,3 +12,5 @@ benchmark_scalability/*out.qasm
 cliffordT_template/Core.v
 cliffordT_template/define.v
 cliffordT_template/measureClifford.v
+PQSim_ss/*.qasm
+PQSim_ss/*.out

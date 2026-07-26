@@ -1,0 +1,70 @@
+/////////clusters/////////
+[[cirq.NamedQubit('c_0_0'), cirq.NamedQubit('c_0_1')], [cirq.NamedQubit('c_1_0')], [cirq.NamedQubit('c_2_0')], [cirq.NamedQubit('c_3_0')]]
+
+/////////fragments/////////
+fragment_0
+------------------------
+quantum_inputs: {cirq.NamedQubit('cut_3'): 'cut_3'}
+quantum_outputs: {cirq.NamedQubit('c_0_1'): 'cut_0'}
+circuit_outputs (all_qubits - quantum_outputs): [cirq.NamedQubit('c_0_0'), cirq.NamedQubit('cut_3')]
+all_qubits: frozenset({cirq.NamedQubit('cut_3'), cirq.NamedQubit('c_0_0'), cirq.NamedQubit('c_0_1')})
+////////////////////////
+fragment_1
+------------------------
+quantum_inputs: {}
+quantum_outputs: {cirq.NamedQubit('c_1_0'): 'cut_1'}
+circuit_outputs (all_qubits - quantum_outputs): []
+all_qubits: frozenset({cirq.NamedQubit('c_1_0')})
+////////////////////////
+fragment_2
+------------------------
+quantum_inputs: {}
+quantum_outputs: {cirq.NamedQubit('c_2_0'): 'cut_2'}
+circuit_outputs (all_qubits - quantum_outputs): []
+all_qubits: frozenset({cirq.NamedQubit('c_2_0')})
+////////////////////////
+fragment_3
+------------------------
+quantum_inputs: {cirq.NamedQubit('cut_2'): 'cut_2', cirq.NamedQubit('cut_4'): 'cut_4'}
+quantum_outputs: {}
+circuit_outputs (all_qubits - quantum_outputs): [cirq.NamedQubit('c_3_0'), cirq.NamedQubit('cut_2'), cirq.NamedQubit('cut_4')]
+all_qubits: frozenset({cirq.NamedQubit('cut_2'), cirq.NamedQubit('cut_4'), cirq.NamedQubit('c_3_0')})
+////////////////////////
+fragment_4
+------------------------
+quantum_inputs: {cirq.NamedQubit('cut_0'): 'cut_0', cirq.NamedQubit('cut_1'): 'cut_1'}
+quantum_outputs: {cirq.NamedQubit('cut_0'): 'cut_3', cirq.NamedQubit('cut_1'): 'cut_4'}
+circuit_outputs (all_qubits - quantum_outputs): []
+all_qubits: frozenset({cirq.NamedQubit('cut_0'), cirq.NamedQubit('cut_1')})
+
+
+/////////code for class "Fragment"/////////
+class Fragment:
+    """
+    Data structure for representing a fragment of a cut-up circuit.
+
+    Fragments input/output qubits are partitioned into "circuit inputs", "circuit outputs",
+    "quantum inputs", and "quantum outputs".
+    - Circuit inputs/outputs = degrees of freedom at the beginning/end of the full (uncut) circuit.
+      - Circuit inputs always start in |0>.
+      - Circuit outputs are always measured in the computational basis.
+    - Quantum inputs/outputs = degrees of freedom adjacent to a cut in the full circuit.
+    Quantum inputs/outputs are specified by a dictionary that maps a qubit to a cut_name.
+    """
+
+    def __init__(
+        self,
+        circuit: cirq.AbstractCircuit,
+        quantum_inputs: Optional[Mapping[cirq.Qid, str]] = None,
+        quantum_outputs: Optional[Mapping[cirq.Qid, str]] = None,
+    ) -> None:
+        self.circuit = cirq.Circuit(circuit)
+        self.quantum_inputs = quantum_inputs or {}
+        self.quantum_outputs = quantum_outputs or {}
+        assert all(qubit in circuit.all_qubits() for qubit in self.quantum_inputs)
+        assert all(qubit in circuit.all_qubits() for qubit in self.quantum_outputs)
+        self.circuit_outputs = sorted(circuit.all_qubits() - set(self.quantum_outputs))
+        print(self.quantum_inputs)
+        print(self.quantum_outputs)
+        print(self.circuit_outputs)
+        print(self.circuit.all_qubits())

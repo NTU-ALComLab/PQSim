@@ -139,7 +139,7 @@ public:
 };
 
 // Convert the bit string to the char string
-// This is for UART commucations as we send the data byte by byte
+// This is for UART communications as we send the data byte by byte
 string bitStringToString(string bitStr, int length)
 {
     // fill 0 until the size is multiples of 8
