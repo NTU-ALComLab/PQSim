@@ -14,3 +14,10 @@ cliffordT_template/define.v
 cliffordT_template/measureClifford.v
 PQSim_ss/*.qasm
 PQSim_ss/*.out
+PQSim_ss/*.txt
+PQSim_ss/our/*.qasm
+PQSim_ss/our/*.out
+PQSim_ss/our/*.txt
+PQSim_ss/our_new/*.qasm
+PQSim_ss/our_new/*.out
+PQSim_ss/our_new/*.txt
