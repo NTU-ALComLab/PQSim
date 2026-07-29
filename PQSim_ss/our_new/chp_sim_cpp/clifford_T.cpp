@@ -751,6 +751,7 @@ void Observable::_iterate_group_measurement(vector<char>& current_sequence, vect
                     }
                 }
                 // cout << "i = " << i << ", state = " << state << endl;
+                _num_state[state]++;
                 if (state == 1) continue;
                 for(int j=0;j < pow(2, CCX_grouping[i].size() / 2);j++) {
                     // decide current sequence
@@ -887,4 +888,12 @@ void Observable::print_maps(){
     for (const auto& p : _original_map) {
         std::cout << "{" << p.first << ", " << p.second << "}" << endl;
     }
+}
+
+void Observable::print_grouping_effect() {
+    cout << "State 0 : " << _num_state[0] << endl;
+    cout << "State 1 : " << _num_state[1] << endl;
+    cout << "State 2 : " << _num_state[2] << endl;
+    double reduction = (double)(_num_state[0] * 2 + _num_state[2]) / (double)((_num_state[0] + _num_state[1] + _num_state[2])* 2);
+    cout << "estimated reduction : " << reduction << endl;
 }

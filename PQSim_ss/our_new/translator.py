@@ -1,16 +1,6 @@
-from qiskit import *
-from qiskit.quantum_info.operators import Operator
-from numpy import conjugate, pi, sqrt
-#from qiskit.execute_function import execute
-from qiskit.circuit.library import XGate, SGate, SdgGate, CPhaseGate
-from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace
-#from qiskit.extensions import UnitaryGate
-from qiskit.quantum_info import random_statevector
-import random
-import os
+from qiskit import QuantumCircuit
 import numpy as np
-from qiskit import qasm2, qasm3
-from qiskit.quantum_info import StabilizerState, Pauli
+from qiskit.quantum_info import StabilizerState
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -45,7 +35,7 @@ class Gate():
     def setS(self):
         assert (self._type == "t")
         self._type = "s"
-        
+
     def getType(self):
         return self._type
 
@@ -57,17 +47,17 @@ class Gate():
 
     def getParent(self, index):
         return self._parents[index]
-        
+
     def addChild(self, index, gate):
         self._children[index] = gate
 
     def addParent(self, index, gate):
         self._parents[index] = gate
-        
+
     def incChildrenCnt(self):
         for child_key in self._children:
             self._children[child_key]._count += 1
-            
+
     def decChildrenCnt(self):
         new = []
         for child_key in self._children:
@@ -77,10 +67,10 @@ class Gate():
             if (child._count == 0):
                 new.append(child)
         return new
-    
+
     def __repr__(self):
         return str(self._type) + ", " + str(self._qubits)
-    
+
 """
 x = Gate(123, 456)
 y = Gate(789, 13)
@@ -99,12 +89,12 @@ def print(*args, **kwargs):
         else:
             new_args.append(item)
     new_args = tuple(new_args)
-    
+
     return __builtin__.print(*new_args, **kwargs)
 
 def applyGate(qc, operation):
     (gate, qubits) = operation
-    
+
     if gate=='h':
         qc.h(qubits[0])
     elif gate=='s':
@@ -140,7 +130,7 @@ def parseBlif(rfilename, wfilename):
         line = line.strip('; ')
         if line == '':
             continue
-        
+
         temp = line.split(' ')
         if temp[0] in ['OPENQASM', 'include', 'qreg', 'creg']:
             headings.append(line)
@@ -188,12 +178,12 @@ def parseBlif(rfilename, wfilename):
             n_ancilla += 2 * 1
         if gate.getType() in ["ccx"]:
             n_ancilla += 2 * 3
-    
+
     # parse graph
     wfile =  open(wfilename, 'w')
     wfile.write('OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[%d];\n' % (n_qubits + n_ancilla))
     qc = QuantumCircuit(n_qubits + n_ancilla)
-    
+
     ancilla_index = n_qubits
     t_gates = []
     ccx_gates = []
@@ -204,7 +194,7 @@ def parseBlif(rfilename, wfilename):
 
     clifford_observables = dict()
     qubit_mapping = dict(zip(range(n_qubits), range(n_qubits)))
-        
+
     for gate in gates:
         gate_type = gate.getType()
         qubits = gate.getQubits()
@@ -223,24 +213,24 @@ def parseBlif(rfilename, wfilename):
                 elif gate_type == "ccx":
                     clifford_observables[ancilla_index + 1] = 'input of cut %d %s' % (n_cut, gate_type)
 
-                wfile.write('x q[%d];\n' % ancilla_index)       
+                wfile.write('x q[%d];\n' % ancilla_index)
                 wfile.write('h q[%d];\n' % ancilla_index)
                 wfile.write('cx q[%d], q[%d];\n' % (ancilla_index, ancilla_index + 1) )
                 wfile.write('x q[%d];\n' % (ancilla_index + 1))
-                qc = applyGate(qc, ('x', [ancilla_index]))    
+                qc = applyGate(qc, ('x', [ancilla_index]))
                 qc = applyGate(qc, ('h', [ancilla_index]))
                 qc = applyGate(qc, ('cx', [ancilla_index, ancilla_index + 1]))
                 qc = applyGate(qc, ('x', [ancilla_index + 1]))
-                
+
                 qubit_mapping[ith_qubit] = ancilla_index
                 ancilla_index += 2
                 n_cut += 1
-                
+
             if gate_type == "t":
                 n_t += 1
             elif gate_type == "ccx":
                 n_ccx += 1
-                    
+
             # record
             if gate_type == "t":
                 t_gates.append(gate)
@@ -253,10 +243,10 @@ def parseBlif(rfilename, wfilename):
             wfile.write(', '.join(map(lambda x: 'q[%d]' % qubit_mapping[x], qubits)))
             qc = applyGate(qc, (gate_type, list(map(lambda x: qubit_mapping[x], qubits))))
             wfile.write(';\n')
-            
+
     assert (ancilla_index == n_qubits + n_ancilla)
     wfile.close()
-    
+
     tableau = StabilizerState(qc).clifford.tableau
     for ith_qubit in range(n_qubits):
         clifford_observables[qubit_mapping[ith_qubit]] = 'original %d' % ith_qubit
@@ -272,15 +262,15 @@ if __name__ == '__main__':
         f.write('number of qubits: {}\n\n'.format(n_qubits_new))
         f.write('number of T gates: {}\n\n'.format(len(t_gates)))
         f.write('number of CCX gates: {}\n\n'.format(len(ccx_gates)))
-        
+
         f.write('Clifford measurements:\n')
         for i in range(n_qubits_new):
             f.write('{}\n'.format(clifford_observables[i]))
         f.write('\n')
-                
+
         f.write('Tableau of main Clifford circuit:\n')
         np.savetxt(f, tableau, fmt='%d')
-        
+
         print(n_qubits_old)
         print(n_qubits_new)
         print(n_cut)

@@ -27,11 +27,13 @@ public:
         prepare_CCX();
         prepare_T();
         _num_obs = 0;
+        _num_state = vector<int>(3,0);
     }
 
     void print_maps();
     vector<int> get_output_prob(string& q);
     vector<int> get_output_prob(vector<bool>& q);
+    void print_grouping_effect();
 
 private:
     unordered_map<std::string, vector<int> > _CCX_table;
@@ -49,6 +51,9 @@ private:
     int _num_obs;
     int _num_delayed_prepare;
     int _use_grouping;
+
+    // record grouping effect
+    vector<int> _num_state;
 
     const string _measure_sequence_T = "IZXXYY";
     const string _prepare_sequence_T = "IZXYYX";

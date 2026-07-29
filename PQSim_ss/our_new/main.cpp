@@ -269,6 +269,7 @@ void sample_mode(string filename, int n_origin, int n_after, int n_cuts, int tot
     end = clock();
     cout << "Time: " << (double)(end - start) / CLOCKS_PER_SEC << "s" << endl;
     print_profile(total_shot);
+    if (use_grouping) obs.print_grouping_effect();
     // return 0;
 }
 
