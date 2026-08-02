@@ -206,6 +206,8 @@ void sample_mode(string filename, int n_origin, int n_after, int n_cuts, int tot
     // Create a random device and a generator
     std::random_device rd;
     std::mt19937 gen(rd());
+    // fix seed if needed
+    // gen.seed(1000);
 // prob = a(int) + b(int)sqrt(2) / (some int)
     string ccx_filename = "Toffoli.csv";
     Observable obs(filename, ccx_filename, n_after, n_cuts, n_origin, use_grouping);

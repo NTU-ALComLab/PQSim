@@ -17,3 +17,5 @@ Below is the block diagram of our design. The design files can be found in this 
 - `measureClifford.v` : Submodule for the `Core.v`. Dealing with measurements of Clifford circuits
 - `Nexys-Video-Master.xdc` : Constraint file for the FPGA we used
 - `uart.v` : For UART communications
+
+Note : Currently the emulator has a small bug. In the measurement stage (iterate), the tableau we use should be the tableau after the setup stage, instead of the original tableau.

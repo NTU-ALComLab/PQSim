@@ -578,12 +578,12 @@ void Observable::_iterate_group_measurement(vector<char>& current_sequence, vect
             };
             vector<vector<int>> half_generator = {
                 {},
-                {1,4,5,7},
-                {2,4,6,7},
-                {3,5,6,7},
-                {1,2,5,6},
-                {1,3,4,6},
-                {2,3,4,5},
+                {1},
+                {2},
+                {3},
+                {1,2},
+                {1,3},
+                {2,3},
                 {1,2,3,7}
             };
             // No grouping method
