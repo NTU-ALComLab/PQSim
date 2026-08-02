@@ -578,9 +578,9 @@ void Observable::_iterate_group_measurement(vector<char>& current_sequence, vect
             };
             vector<vector<int>> half_generator = {
                 {},
-                {1},
-                {2},
-                {3},
+                {1,7},
+                {2,7},
+                {3,7},
                 {1,2},
                 {1,3},
                 {2,3},
