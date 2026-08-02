@@ -586,6 +586,16 @@ void Observable::_iterate_group_measurement(vector<char>& current_sequence, vect
                 {2,3},
                 {1,2,3,7}
             };
+            vector<vector<int>> half_generator_minus = {
+                {},
+                {4,5},
+                {4,6},
+                {4,5},
+                {5,6},
+                {4,6},
+                {4,5},
+                {}
+            };
             // No grouping method
             /*
             for(int i = 0;i<num_group;i++) {
@@ -748,6 +758,18 @@ void Observable::_iterate_group_measurement(vector<char>& current_sequence, vect
                     else if (first_group_value[g] == -1) {
                         state = 2;
                         break;
+                    }
+                }
+                if (state == 0) {
+                    for(int g : half_generator_minus[i]) {
+                        if (first_group_value[g] == 1) {
+                            state = 2;
+                            break;
+                        }
+                        else if (first_group_value[g] == -1) {
+                            state = 1;
+                            break;
+                        }
                     }
                 }
                 // cout << "i = " << i << ", state = " << state << endl;
