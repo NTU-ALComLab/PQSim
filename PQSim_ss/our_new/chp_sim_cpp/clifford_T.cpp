@@ -189,8 +189,7 @@ void Observable::parseCircuit(const std::string& filename) {
     file.close();
 }
 
-inline string Observable::toCliffordObservable(vector<char>& current_sequence) {
-    string clifford_observable = "";
+inline void Observable::toCliffordObservable(string& current_sequence, string& clifford_observable) {
     for (int i = 0; i < _numQubits; ++i) {
         if (_Clifford_map[i].first == "original") {
             clifford_observable.push_back('I');
@@ -238,7 +237,6 @@ inline string Observable::toCliffordObservable(vector<char>& current_sequence) {
             throw std::runtime_error("Invalid Clifford setting");
         }
     }
-    return clifford_observable;
 }
 
 vector<int> Observable::get_output_prob(string& q){
@@ -271,7 +269,7 @@ vector<int> Observable::get_output_prob(string& q){
     prob_clifford_vec[2] = prob_clifford.second;
     // cout << "prob_clifford: " << prob_clifford_vec[0] << " " << prob_clifford_vec[1] << " " << prob_clifford_vec[2] << endl;
 
-    if (_use_grouping) _iterate_group_measurement(current_sequence, output_prob, vector<int>({1,0,0}));
+    if (_use_grouping) _iterate_group_measurement(output_prob);
     else _iterate_measurement(current_sequence, output_prob, vector<int>({1,0,0}));
     // cout << "output_prob: " << output_prob[0] << " " << output_prob[1] << " " << output_prob[2] << endl;
     vector<int> prob = _multiply_prob(prob_clifford_vec, output_prob);
@@ -304,7 +302,7 @@ vector<int> Observable::get_output_prob(vector<bool>& q){
     prob_clifford_vec[2] = prob_clifford.second;
     // cout << "prob_clifford: " << prob_clifford_vec[0] << " " << prob_clifford_vec[1] << " " << prob_clifford_vec[2] << endl;
 
-    if (_use_grouping) _iterate_group_measurement(current_sequence, output_prob, vector<int>({1,0,0}));
+    if (_use_grouping) _iterate_group_measurement(output_prob);
     else _iterate_measurement(current_sequence, output_prob, vector<int>({1,0,0}));
     // cout << "output_prob: " << output_prob[0] << " " << output_prob[1] << " " << output_prob[2] << endl;
 
@@ -427,10 +425,12 @@ void Observable::_iterate_measurement(vector<char>& current_sequence, vector<int
 
 }
 
-void Observable::_iterate_group_measurement(vector<char>& current_sequence, vector<int>& total_prob, vector<int> coeff) {
+void Observable::_iterate_group_measurement(vector<int>& total_prob) {
     // Assume the non-Clifford part is only T gates or one Toffoli gate
     if (_input_map[0].first == 'T') {
         int num_T = _input_map.size();
+        string current_sequence;
+        vector<int> coeff(3, 0);
         // Use the systematic partition, let A = {ZZ,XX,YY}, B = {II,XY,YX}
         // For n T gates, there are 6^n Pauli strings
         // Traverse all length-n bit strings, each bit string corresponds to a grouping
@@ -445,7 +445,7 @@ void Observable::_iterate_group_measurement(vector<char>& current_sequence, vect
         // iterate all bit strings
         for(int i=0;i<pow(2, num_T);i++) {
             // bit representation of i
-            cout << "i = " << i << endl;
+            // cout << "i = " << i << endl;
             int tmp_i = i;
             vector<int> bstr(num_T, 0);
             for(int j=0;j<num_T;j++) {
@@ -555,177 +555,30 @@ void Observable::_iterate_group_measurement(vector<char>& current_sequence, vect
             // The remaining 7 groups has similar structure
             // One of the group is {I,Z}X{I,Z}{I,Z}X{I,Z} U {I,Z}Y{I,Z}{I,Z}Y{I,Z}
             // Other 6 groups can be similarly derived by changing the non-IZ positions
-            unordered_map<string, int> coef_map;
-            for (int i = 0; i < _measure_sequence_CCX[0].size(); i++) {
-                string conf = "";
-                for (int j = 0; j < _measure_sequence_CCX.size(); j++) {
-                    conf += _prepare_sequence_CCX[j][i];
-                    conf += _measure_sequence_CCX[j][i];
-                }
-                coef_map[conf] = i;
-            }
-
-            int num_group = 8;
-            vector<vector<string>> CCX_grouping = {
-                {"III","ZII","IZI","IIX","ZZI","ZIX","IZX","ZZX"},
-                {"XII","XZI","XIX","XZX","YII","YZI","YIX","YZX"},
-                {"IXI","ZXI","IXX","ZXX","IYI","ZYI","IYX","ZYX"},
-                {"IIZ","ZIZ","IZZ","ZZZ","IIY","ZIY","IZY","ZZY"},
-                {"XXI","XXX","YYI","YYX","XYI","XYX","YXI","YXX"},
-                {"XIZ","XZZ","YIY","YZY","XIY","XZY","YIZ","YZZ"},
-                {"IXZ","ZXZ","IYY","ZYY","IXY","ZXY","IYZ","ZYZ"},
-                {"XXZ","YYZ","YXY","XYY","YXZ","XYZ","XXY","YYY"}
-            };
-            vector<vector<int>> half_generator = {
-                {},
-                {1,7},
-                {2,7},
-                {3,7},
-                {1,2},
-                {1,3},
-                {2,3},
-                {1,2,3,7}
-            };
-            vector<vector<int>> half_generator_minus = {
-                {},
-                {4,5},
-                {4,6},
-                {4,5},
-                {5,6},
-                {4,6},
-                {4,5},
-                {}
-            };
-            // No grouping method
-            /*
-            for(int i = 0;i<num_group;i++) {
-                // iterate all groups
-                // cout << "i = " << i << endl;
-                int iter_size = CCX_grouping[i].size() * ((i==0)? 1 : 4);
-                for(int j=0;j<iter_size;j++) {
-                    // decide current sequence
-                    current_sequence.clear();
-                    coeff = vector<int>({1,0,0});
-                    if (i == 0) {
-                        // one to one
-                        string seq = "";
-                        for(int k=0;k<_measure_sequence_CCX.size();k++) {
-                            seq += CCX_grouping[i][j][k];
-                            seq += CCX_grouping[i][j][k];
-                        }
-                        current_sequence = vector<char>(seq.begin(), seq.end());
-                        coeff = _coef_sequence_CCX[coef_map[seq]];
-                    }
-                    else {
-                        // one to four
-                        string seq = "";
-                        for(int k=0;k<_measure_sequence_CCX.size();k++) {
-                            int target_j = j / 4;
-                            int target_j2 = ((j >= (CCX_grouping[i].size() * 2))? 4 : 0) + j % 4;
-                            seq += CCX_grouping[i][target_j][k];
-                            seq += CCX_grouping[i][target_j2][k];
-                        }
-                        current_sequence = vector<char>(seq.begin(), seq.end());
-                        coeff = _coef_sequence_CCX[coef_map[seq]];
-                    }
-                    // Measurement
-                    _num_obs++;
-
-                    // Clifford part
-                    string clifford_observable = "";
-                    for (int i = 0; i < _numQubits; ++i) {
-                        if (_Clifford_map[i].first == "original") {
-                            clifford_observable.push_back('I');
-                        }
-                        else if (_Clifford_map[i].first == "output") {
-                            clifford_observable.push_back(current_sequence[_Clifford_map[i].second * 2 + 1]);
-                        }
-                        else if (_Clifford_map[i].first == "input") {
-                            if (current_sequence[_Clifford_map[i].second * 2] == '0') {
-                                clifford_observable.push_back('1');
-                            }
-                            else if (current_sequence[_Clifford_map[i].second * 2] == '1') {
-                                clifford_observable.push_back('0');
-                            }
-                            else if (current_sequence[_Clifford_map[i].second * 2] == '+') {
-                                clifford_observable.push_back('-');
-                            }
-                            else if (current_sequence[_Clifford_map[i].second * 2] == '-') {
-                                clifford_observable.push_back('+');
-                            }
-                            else if (current_sequence[_Clifford_map[i].second * 2] == 'i') {
-                                clifford_observable.push_back('j');
-                            }
-                            else if (current_sequence[_Clifford_map[i].second * 2] == 'j') {
-                                clifford_observable.push_back('i');
-                            }
-                            else if (current_sequence[_Clifford_map[i].second * 2] == 'I') {
-                                clifford_observable.push_back('I');
-                            }
-                            else if (current_sequence[_Clifford_map[i].second * 2] == 'X') {
-                                clifford_observable.push_back('X');
-                            }
-                            else if (current_sequence[_Clifford_map[i].second * 2] == 'Y') {
-                                clifford_observable.push_back('Y');
-                            }
-                            else if (current_sequence[_Clifford_map[i].second * 2] == 'Z') {
-                                clifford_observable.push_back('Z');
-                            }
-                            else {
-                                throw std::runtime_error("Invalid Clifford delayed prepare setting");
-                            }
-                        }
-                        else {
-                            std::cout << _Clifford_map[i].first << std::endl;
-                            throw std::runtime_error("Invalid Clifford setting");
-                        }
-                    }
-                    _clifford_simulator.measure(clifford_observable);
-                    pair<int, int> prob_clifford = _clifford_simulator.get_prob();
-                    vector<int> prob_clifford_vec(3);
-                    prob_clifford_vec[0] = prob_clifford.first;
-                    prob_clifford_vec[1] = 0;
-                    prob_clifford_vec[2] = prob_clifford.second;
-
-                    vector<int> prob = _multiply_prob(coeff, prob_clifford_vec);
-                    prob[0] = (1<<_num_delayed_prepare) * prob[0];
-                    prob[1] = (1<<_num_delayed_prepare) * prob[1];
-                    total_prob = _sum_prob(total_prob, prob);
-
-                    // check value for each configuration
-                    // if (prob_clifford_vec[0] != 0 || prob_clifford_vec[1] != 0) {
-                    //     for(char c : current_sequence) cout << c;
-                    //     cout << " : ";
-                    //     cout << prob_clifford_vec[0] << ' ' << prob_clifford_vec[1] << ' ' << prob_clifford_vec[2] << '\t';
-                    //     cout << coeff[0] << ' ' << coeff[1] << ' ' << coeff[2] << endl;
-                    // }
-
-                    _clifford_simulator.restore_no_delayed_prepare();
-                }
-            }
-            */
 
             // Grouping method
             // Measure the first group then record
             // Because the observables are Pauli strings, only 1, 0, -1 will occur
-            vector<int> first_group_value(CCX_grouping[0].size());
-            for(int j=0;j<CCX_grouping[0].size();j++) {
+            string current_sequence = "";
+            string clifford_observable = "";
+            vector<int> coeff(3);
+            vector<int> first_group_value(8,0);
+            for(int j=0;j<8;j++) {
                 // decide current sequence
                 current_sequence.clear();
-                coeff = vector<int>({1,0,0});
                 // one to one
-                string seq = "";
-                for(int k=0;k<_measure_sequence_CCX.size();k++) {
-                    seq += CCX_grouping[0][j][k];
-                    seq += CCX_grouping[0][j][k];
+                for(int k=0;k<3;k++) {
+                    current_sequence += _CCX_grouping[0][j][k];
+                    current_sequence += _CCX_grouping[0][j][k];
                 }
-                current_sequence = vector<char>(seq.begin(), seq.end());
-                coeff = _coef_sequence_CCX[coef_map[seq]];
+                coeff = _coef_sequence_CCX[_coef_map[current_sequence]];
 
                 // Measurement
                 _num_obs++;
 
-                _clifford_simulator.measure(toCliffordObservable(current_sequence));
+                clifford_observable.clear();
+                toCliffordObservable(current_sequence, clifford_observable);
+                _clifford_simulator.measure(clifford_observable);
                 pair<int, int> prob_clifford = _clifford_simulator.get_prob();
                 vector<int> prob_clifford_vec(3);
                 prob_clifford_vec[0] = prob_clifford.first;
@@ -744,13 +597,14 @@ void Observable::_iterate_group_measurement(vector<char>& current_sequence, vect
 
             // The other 7 groups
             // Here, we use the grouping technique to eliminate calculations
-            for(int i = 1;i<num_group;i++) {
+            for(int i = 1;i<_num_CCX_group;i++) {
                 // this is the easier implementation of observable grouping
                 // if the half generator has value 1, the first half and the second half will cancel out
                 // if the half generator has value -1, the first half and the second half will be the same
+                // the condition is inverted for half generator minus
                 // otherwise, no grouping will occurred
                 int state = 0;
-                for(int g : half_generator[i]) {
+                for(int g : _half_generator[i]) {
                     if (first_group_value[g] == 1) {
                         state = 1;
                         break;
@@ -761,7 +615,7 @@ void Observable::_iterate_group_measurement(vector<char>& current_sequence, vect
                     }
                 }
                 if (state == 0) {
-                    for(int g : half_generator_minus[i]) {
+                    for(int g : _half_generator_minus[i]) {
                         if (first_group_value[g] == 1) {
                             state = 2;
                             break;
@@ -775,26 +629,26 @@ void Observable::_iterate_group_measurement(vector<char>& current_sequence, vect
                 // cout << "i = " << i << ", state = " << state << endl;
                 _num_state[state]++;
                 if (state == 1) continue;
-                for(int j=0;j < pow(2, CCX_grouping[i].size() / 2);j++) {
+                for(int j=0;j < 16;j++) {
                     // decide current sequence
                     current_sequence.clear();
-                    coeff = vector<int>({1,0,0});
-
                     // one to four
                     string seq = "";
-                    for(int k=0;k<_measure_sequence_CCX.size();k++) {
+                    for(int k=0;k<3;k++) {
                         int target_j = j / 4;
                         int target_j2 = j % 4;
-                        seq += CCX_grouping[i][target_j][k];
-                        seq += CCX_grouping[i][target_j2][k];
+                        current_sequence += _CCX_grouping[i][target_j][k];
+                        current_sequence += _CCX_grouping[i][target_j2][k];
                     }
-                    current_sequence = vector<char>(seq.begin(), seq.end());
-                    coeff = _coef_sequence_CCX[coef_map[seq]];
+
+                    coeff = _coef_sequence_CCX[_coef_map[current_sequence]];
 
                     // Measurement
                     _num_obs++;
 
-                    _clifford_simulator.measure(toCliffordObservable(current_sequence));
+                    clifford_observable.clear();
+                    toCliffordObservable(current_sequence, clifford_observable);
+                    _clifford_simulator.measure(clifford_observable);
                     pair<int, int> prob_clifford = _clifford_simulator.get_prob();
                     vector<int> prob_clifford_vec(3);
                     prob_clifford_vec[0] = prob_clifford.first;
@@ -821,23 +675,23 @@ void Observable::_iterate_group_measurement(vector<char>& current_sequence, vect
                     if (state == 0 && prob_clifford.first == 0) {
                         // decide current sequence
                         current_sequence.clear();
-                        coeff = vector<int>({1,0,0});
-
                         // one to four
                         string seq = "";
-                        for(int k=0;k<_measure_sequence_CCX.size();k++) {
+                        for(int k=0;k<3;k++) {
                             int target_j = j / 4 + 4;
                             int target_j2 = j % 4 + 4;
-                            seq += CCX_grouping[i][target_j][k];
-                            seq += CCX_grouping[i][target_j2][k];
+                            current_sequence += _CCX_grouping[i][target_j][k];
+                            current_sequence += _CCX_grouping[i][target_j2][k];
                         }
-                        current_sequence = vector<char>(seq.begin(), seq.end());
-                        coeff = _coef_sequence_CCX[coef_map[seq]];
+
+                        coeff = _coef_sequence_CCX[_coef_map[current_sequence]];
 
                         // Measurement
                         _num_obs++;
 
-                        _clifford_simulator.measure(toCliffordObservable(current_sequence));
+                        clifford_observable.clear();
+                        toCliffordObservable(current_sequence, clifford_observable);
+                        _clifford_simulator.measure(clifford_observable);
                         pair<int, int> prob_clifford = _clifford_simulator.get_prob();
                         vector<int> prob_clifford_vec(3);
                         prob_clifford_vec[0] = prob_clifford.first;
